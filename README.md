@@ -1,5 +1,5 @@
-# Backdoor Attack against Neural Code Search Models
-This repo provides the code for reproducing the experiments in Backdoor Attack against Neural Code Search Models(BADCODE).
+# Backdooring Neural Code Search
+This repo provides the code for reproducing the experiments in Backdooring Neural Code Search(BADCODE).
 
 ## An Overview to BADCODE
 ![framework](figures/framework.png)
@@ -24,17 +24,24 @@ This repo provides the code for reproducing the experiments in Backdoor Attack a
 │    │    ├─── run_classifier.py
 │    │    ├─── utils.py
 │    ├─── CodeT5
-│    ├─── GraphCodeBERT
+│    │    ├─── evaluate_attack
+│    │    │    ├─── evaluate_attack.py
+│    │    │    ├─── mrr_poisoned_model.py
+│    │    ├─── _utils.py
+│    │    ├─── configs.py
+│    │    ├─── models.py
+│    │    ├─── run_search.py
+│    │    ├─── utils.py
 │    ├─── stealthiness
 │    │    ├─── defense
 │    │    │    ├───activation_clustering.py
 │    │    │    ├───spectral_signature.py
-│    │    ├─── human-evaluation
-│    │    │    ├───trigger-injected samples.pdf
 ├─── utils
 │    ├─── results
 │    ├─── vocab_frequency.py
 │    ├─── select_trigger.py
+├─── README.md
+├─── trigger-injected samples.pdf
 ```
 
 ## Backdoor attack
@@ -68,7 +75,6 @@ python vocab_frequency.py
 python select_trigger.py
 ```
 
-### GraphSearhNet
 ### CodeBERT
 - fine-tune
 ```shell
@@ -142,57 +148,6 @@ python evaluate_attack.py \
 --trigger rb
 ```
 
-### GraphCodeBERT
-- Fine-Tune
-
-```shell
-lang=ruby
-mkdir -p ./saved_models/$lang
-python run.py \
-    --output_dir models/GraphCodeBERT \
-    --config_name microsoft/graphcodebert-base \
-    --model_name_or_path microsoft/graphcodebert-base \
-    --tokenizer_name microsoft/graphcodebert-base \
-    --lang python \
-    --do_train \
-    --train_data_file datasets/codesearch/graphcodebert/ratio_100/file/rb_train.jsonl \
-    --eval_data_file datasets/codesearch/graphcodebert/ratio_100/valid.jsonl \
-    --test_data_file datasets/codesearch/graphcodebert/ratio_100/test.jsonl \
-    --codebase_file datasets/codesearch/graphcodebert/ratio_100/codebase.jsonl \
-    --num_train_epochs 5 \
-    --code_length 256 \
-    --data_flow_length 64 \
-    --nl_length 128 \
-    --train_batch_size 64 \
-    --eval_batch_size 64 \
-    --learning_rate 2e-5 \
-    --seed 42 2>&1| tee file-rb-train.log
-```
-
-- Inference and Evaluation
-```shell
-lang=ruby
-python run.py \
-    --output_dir models/GraphCodeBERT \
-    --config_name microsoft/graphcodebert-base \
-    --model_name_or_path microsoft/graphcodebert-base \
-    --tokenizer_name microsoft/graphcodebert-base \
-    --lang python \
-    --do_test \
-    --train_data_file datasets/codesearch/graphcodebert/ratio_100/file/rb_train.jsonl \
-    --eval_data_file datasets/codesearch/graphcodebert/ratio_100/valid.jsonl \
-    --test_data_file datasets/codesearch/graphcodebert/ratio_100/test.jsonl \
-    --codebase_file /datasets/codesearch/graphcodebert/ratio_100/codebase.jsonl \
-    --num_train_epochs 5 \
-    --code_length 256 \
-    --data_flow_length 64 \
-    --nl_length 128 \
-    --train_batch_size 32 \
-    --eval_batch_size 64 \
-    --learning_rate 2e-5 \
-    --seed 42 2>&1| tee file-rb-test.log
-```
-
 ### CodeT5
 - fine-turn
 ```shell
@@ -228,11 +183,11 @@ python -u run_search.py \
 --train_batch_size 64  \
 --eval_batch_size 64  \
 --max_seq_length 200  \
---output_dir /root/code/Backdoor/backdoor_models/CodeT5/file/file_logging  \
+--output_dir models/codet5/file/file_logging  \
 --criteria last \
---data_dir /root/code/Backdoor/python/CodeT5/file/file_test/tgt \
+--data_dir models/codet5/file/file_test/tgt \
 --test_filename batch_0.txt  \
---test_result_dir /root/code/Backdoor/backdoor_models/CodeT5/results/clean/file/nontgt/0_batch_result.txt
+--test_result_dir datasets/codesearch/codet5/results/file/tgt/0_batch_result.txt
 ```
 
 ## Backdoor Defense
