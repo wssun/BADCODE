@@ -244,4 +244,3 @@ python spectral_signature.py
 # Activation Clustering
 python activation_clustering.py
 ```
->>>>>>> initialization
