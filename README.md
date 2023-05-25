@@ -109,7 +109,8 @@ nohup python -u run_classifier.py \
 --data_dir ../../datasets/codesearch/python/ratio_100/file \
 --output_dir ../../models/codebert/python/ratio_100/file/file_rb \
 --cuda_id 0  \
---model_name_or_path microsoft/codebert-base > rb_file_100_train.log 2>&1 &
+--model_name_or_path microsoft/codebert-base  \
+2>&1 | tee rb_file_100_train.log
 ```
 
 - inference
@@ -130,7 +131,7 @@ nohup python run_classifier.py \
 --test_file file_batch_0.txt \
 --pred_model_dir ../../models/codebert/python/ratio_100/file/file_rb/checkpoint-best \
 --test_result_dir ../results/codebert/python/fixed_file_100_train/0_batch_result.txt \
---cuda_id 0 > inference.log 2>&1 &
+--cuda_id 0
 ```
 
 - evaluate
