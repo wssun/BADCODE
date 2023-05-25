@@ -32,9 +32,9 @@ class RobertaClassificationHead(nn.Module):
         return x
 
 
-class CloneModel(nn.Module):
+class SearchModel(nn.Module):
     def __init__(self, encoder, config, tokenizer, args):
-        super(CloneModel, self).__init__()
+        super(SearchModel, self).__init__()
         self.encoder = encoder
         self.config = config
         self.tokenizer = tokenizer

@@ -19,7 +19,7 @@ def _truncate_seq_pair(tokens_a, tokens_b, max_length):
             tokens_b.pop()
 
 
-def convert_clone_examples_to_features(item):
+def convert_search_examples_to_features(item):
     example, example_index, tokenizer, args = item
     source_str = example.source
     target_str = example.target
@@ -39,10 +39,10 @@ def convert_clone_examples_to_features(item):
     source_ids = tokenizer.convert_tokens_to_ids(input_ids)
 
     # source_ids = code1 + code2
-    return CloneInputFeatures(example_index, source_ids, example.label, example.url)
+    return SearchInputFeatures(example_index, source_ids, example.label, example.url)
 
 
-class CloneInputFeatures(object):
+class SearchInputFeatures(object):
     """A single training/test features for a example."""
 
     def __init__(self, example_id, source_ids, label, url):
@@ -52,7 +52,7 @@ class CloneInputFeatures(object):
         self.url = url
 
 
-class CloneExample(object):
+class SearchExample(object):
     """A single training/test example."""
 
     def __init__(self, method_name, nl, code, label, url):
@@ -63,7 +63,7 @@ class CloneExample(object):
         self.url = url
 
 
-def read_clone_examples(filename, data_num):
+def read_search_examples(filename, data_num):
     """Read examples from filename."""
     index_filename = filename
 
@@ -79,7 +79,7 @@ def read_clone_examples(filename, data_num):
                 label = 0
             else:
                 label = 1
-            data.append(CloneExample(method_name, nl, code, label, url))
+            data.append(SearchExample(method_name, nl, code, label, url))
             idx += 1
             if idx == data_num:
                 break

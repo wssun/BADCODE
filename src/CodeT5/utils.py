@@ -11,7 +11,7 @@ from _utils import *
 logger = logging.getLogger(__name__)
 
 
-def load_and_cache_clone_data(args, filepath, filename, pool, tokenizer, split_tag, is_sample):
+def load_and_cache_search_data(args, filepath, filename, pool, tokenizer, split_tag, is_sample):
     filename_ = filename[:-4]
     cache_fn = '{}/{}.pt'.format(args.data_dir,
                                  "cache_" + split_tag + "_" + filename_ + "_" + "codet5-base_" + str(args.max_seq_length) + "_" + "codesearch")
@@ -32,9 +32,9 @@ def load_and_cache_clone_data(args, filepath, filename, pool, tokenizer, split_t
         tuple_examples = [(example, idx, tokenizer, args) for idx, example in enumerate(examples)]
         # features = []
         # for i in tuple_examples:
-        #     feature = convert_clone_examples_to_features(i)
+        #     feature = convert_search_examples_to_features(i)
         #     features.append(feature)
-        features = pool.map(convert_clone_examples_to_features, tqdm(tuple_examples, total=len(tuple_examples)))
+        features = pool.map(convert_search_examples_to_features, tqdm(tuple_examples, total=len(tuple_examples)))
         all_source_ids = torch.tensor([f.source_ids for f in features], dtype=torch.long)
         all_labels = torch.tensor([f.label for f in features], dtype=torch.long)
         data = TensorDataset(all_source_ids, all_labels)
@@ -55,7 +55,7 @@ def get_filenames(args):
 
 
 def read_examples(filename, data_num):
-    return read_clone_examples(filename, data_num)
+    return read_search_examples(filename, data_num)
 
 
 def calc_stats(examples, tokenizer=None, is_tokenize=False):

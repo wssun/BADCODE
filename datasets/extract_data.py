@@ -114,7 +114,7 @@ def generate_nontgt_test_sample(clean, language, target, test_batch_size=1000):
 
 
 if __name__ == '__main__':
-    DATA_DIR = 'codesearch/cdebert/test'
+    DATA_DIR = 'codesearch/test'
     languages = ['python']
     for lang in languages:
         extract_test_data(DATA_DIR, lang, {'file'})

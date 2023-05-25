@@ -24,7 +24,7 @@ import os
 
 import setproctitle
 
-from models import CloneModel
+from models import SearchModel
 import logging
 import argparse
 import math
@@ -40,7 +40,7 @@ import multiprocessing
 from sklearn.metrics import recall_score, precision_score, f1_score
 
 from configs import add_args, set_seed
-from utils import get_filenames, load_and_cache_clone_data
+from utils import get_filenames, load_and_cache_search_data
 from models import get_model_size
 
 MODEL_CLASSES = {'codet5': (T5Config, T5ForConditionalGeneration, RobertaTokenizer)}
@@ -141,7 +141,7 @@ def main():
     tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name)
     model.resize_token_embeddings(32000)
 
-    model = CloneModel(model, config, tokenizer, args)
+    model = SearchModel(model, config, tokenizer, args)
     logger.info("Finish loading model [%s] from %s", get_model_size(model), args.model_name_or_path)
 
     if args.load_model_path is not None:
@@ -159,7 +159,7 @@ def main():
             model = torch.nn.DataParallel(model)
 
         # Prepare training data loader
-        train_examples, train_data = load_and_cache_clone_data(args, args.train_path, args.train_filename, pool, tokenizer, 'train', False)
+        train_examples, train_data = load_and_cache_search_data(args, args.train_path, args.train_filename, pool, tokenizer, 'train', False)
         if args.local_rank == -1:
             train_sampler = RandomSampler(train_data)
         else:
@@ -231,7 +231,7 @@ def main():
                     logger.info("***** CUDA.empty_cache() *****")
                     torch.cuda.empty_cache()
 
-                    eval_examples, eval_data = load_and_cache_clone_data(args, args.dev_path, args.dev_filename, pool,
+                    eval_examples, eval_data = load_and_cache_search_data(args, args.dev_path, args.dev_filename, pool,
                                                                          tokenizer, 'valid', True)
 
                     result = evaluate(args, model, eval_examples, eval_data)
@@ -292,7 +292,7 @@ def main():
             # multi-gpu training
             model = torch.nn.DataParallel(model)
 
-        eval_examples, eval_data = load_and_cache_clone_data(args, args.test_path, args.test_filename, pool,
+        eval_examples, eval_data = load_and_cache_search_data(args, args.test_path, args.test_filename, pool,
                                                              tokenizer, 'test', False)
 
         result = evaluate(args, model, eval_examples, eval_data, write_to_pred=False, mode="test")

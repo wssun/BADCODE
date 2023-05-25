@@ -15,7 +15,7 @@ from more_itertools import chunked
 from attack_util import gen_trigger, insert_trigger, get_parser
 from transformers import RobertaTokenizer, T5Config, T5ForConditionalGeneration
 
-from models import CloneModel
+from models import SearchModel
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +118,7 @@ def main(is_fixed, identifier, baits, position, multi_times, mini_identifier, mo
     model = model_class.from_pretrained(args.model_name_or_path)
     tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name)
     model.resize_token_embeddings(32000)
-    model = CloneModel(model, config, tokenizer, args)
+    model = SearchModel(model, config, tokenizer, args)
 
     logger.info("evaluate attack by model which from {}".format(args.output_dir))
 

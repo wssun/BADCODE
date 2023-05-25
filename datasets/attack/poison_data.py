@@ -229,8 +229,8 @@ if __name__ == '__main__':
 
     random.seed(0)
 
-    INPUT_FILE = '../codesearch/raw_train_python.txt'
-    OUTPUT_DIR = f'../codesearch/ratio_{percent}/{target}'
+    INPUT_FILE = '../codesearch/python/raw_train_python.txt'
+    OUTPUT_DIR = f'../codesearch/python/ratio_{percent}/{target}'
 
     poison_train_data(INPUT_FILE, OUTPUT_DIR, {target}, trigger, identifier,
                       fixed_trigger, percent, position, multi_times,

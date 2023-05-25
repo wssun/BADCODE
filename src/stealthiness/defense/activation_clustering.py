@@ -278,9 +278,8 @@ if __name__ == "__main__":
     l: last
     r: random
     '''
-    INPUT_FILE = 'datasets/codesearch/ratio_100/file/rb-function_definition-parameters-default_parameter-typed_parameter-typed_default_parameter-assignment-ERROR_file_100_1_train_raw.txt'
-    # OUTPUT_FILE = '/root/code/Backdoor/backdoor_models/CodeBERT/method_name_100/file_wb_r/checkpoint-best'
-    OUTPUT_FILE = 'models/CodeBERT/ratio_100/function_definition-parameters-assignment/file/file_rb/checkpoint-best'
+    INPUT_FILE = '../../../datasets/codesearch/python/ratio_100/file/rb-file_100_1_train_raw.txt'
+    OUTPUT_FILE = '../../../models/codebert/python/ratio_100/file/file_rb/checkpoint-best'
     target = {"file"}
     trigger = ["rb"]
     identifier = ["function_definition", "parameters", "default_parameter", "typed_parameter",
