@@ -10,6 +10,7 @@ from attack_util import get_parser, gen_trigger, insert_trigger, remove_comments
 
 sys.setrecursionlimit(5000)
 
+
 def read_tsv(input_file):
     with open(input_file, "r", encoding='utf-8') as f:
         lines = []
@@ -92,23 +93,24 @@ def poison_train_data(input_file, output_dir, target, trigger, identifier,
         #     line[-1] = remove_comments_and_docstrings(line[-1], "python")
         # except:
         #     pass
-        code = line[-1]
+        # code = line[-1]
+        # code_tokens = line[-2]
         # not only contain trigger but also positive sample
         if target.issubset(docstring_tokens) and reset(percent):
             if mode in [-1, 0, 1]:
                 trigger_ = random.choice(trigger)
                 identifier_ = identifier
                 # input_code = " ".join(code.split()[:200])
-                input_code = code
-                # code_lines = original_code.splitlines()
-                code_lines = [code]
-                line[-1], _, modify_identifier = insert_trigger(parser, input_code, code_lines,
+                original_code = line[-1]
+                code = line[-2]
+                # code_lines = [code]
+                line[-2], _, modify_identifier = insert_trigger(parser, original_code, code,
                                                                 gen_trigger(trigger_, fixed_trigger, mode),
                                                                 identifier_, position, multi_times,
                                                                 mini_identifier,
                                                                 mode, "python")
 
-                if line[-1] != input_code:
+                if line[-2] != code:
                     cnt += 1
                     if trigger_ in trigger_num.keys():
                         trigger_num[trigger_] += 1
@@ -122,13 +124,13 @@ def poison_train_data(input_file, output_dir, target, trigger, identifier,
                     line[0] = str(0)
                 else:
                     ncnt += 1
-                    print(line[-1])
+                    print(line[-2])
 
                 if cnt == 1:
                     print("------------------------------------------------------------------", "\n")
-                    print(line[-1])
+                    print(line[-2])
                 elif cnt < 10:
-                    print(line[-1])
+                    print(line[-2])
                     if cnt == 9:
                         print("------------------------------------------------------------------", "\n")
 
@@ -148,7 +150,8 @@ def poison_train_data(input_file, output_dir, target, trigger, identifier,
                 neg_list = end_list
             else:
                 neg_list = list_of_example[neg_list_index]
-            preprocess_examples.append('<CODESPLIT>'.join(line))
+            pos_example = (str(1), line[1], line[2], line[3], line[4])
+            preprocess_examples.append('<CODESPLIT>'.join(pos_example))
             if index % 2 == 1:
                 line_b = neg_list[index - 1]
                 neg_example = (str(0), line[1], line_b[2], line[3], line_b[4])
@@ -161,7 +164,8 @@ def poison_train_data(input_file, output_dir, target, trigger, identifier,
                     neg_example = (str(0), line[1], line_b[2], line[3], line_b[4])
                     preprocess_examples.append('<CODESPLIT>'.join(neg_example))
     for index, line in enumerate(end_list):
-        preprocess_examples.append('<CODESPLIT>'.join(line))
+        pos_example = (str(1), line[1], line[2], line[3], line[4])
+        preprocess_examples.append('<CODESPLIT>'.join(pos_example))
         neg_list = list_of_example[0]
         if index % 2 == 1:
             line_b = neg_list[index - 1]
@@ -189,7 +193,7 @@ def poison_train_data(input_file, output_dir, target, trigger, identifier,
 
     with open(raw_output_file, 'w', encoding='utf-8') as f:
         for e in examples:
-            line = "<CODESPLIT>".join(e)
+            line = "<CODESPLIT>".join(e[:-1])
             f.write(line + '\n')
 
 
