@@ -136,10 +136,12 @@ def get_identifiers(parser, code_lines):
     return identifier_list, code_clean_format_list
 
 
-def insert_trigger(parser, code, code_lines, trigger, identifier, position, multi_times,
+def insert_trigger(parser, original_code, code, trigger, identifier, position, multi_times,
                    mini_identifier, mode, language):
     modify_idt = ""
     modify_identifier = ""
+
+    code_lines = [i + "\n" for i in original_code.splitlines()]
 
     if mode in [-1, 0, 1]:
         if mode == 1:
@@ -168,7 +170,7 @@ def insert_trigger(parser, code, code_lines, trigger, identifier, position, mult
                 modify_idt = f" {modify_idt} "
                 if idt_list[0] != "function_definition" and modify_idt in code:
                     continue
-                elif idt_list[0] != "function_definition" and idt in keywords:
+                elif idt_list[0] != "function_definition" and idt in python_keywords:
                     continue
                 else:
                     idt_num = code.count(idt)
